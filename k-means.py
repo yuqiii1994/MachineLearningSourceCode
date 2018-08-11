@@ -1,8 +1,10 @@
+#k-means
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
-class knn(object):
+class k_means(object):
 
     def __init__(self, X, y, n_neighborhoods=2, max_iter=50):
         self.n_neighborhoods = n_neighborhoods
@@ -99,5 +101,5 @@ def database_generate(data_volume=100, sigma=2):
 
 if __name__=="__main__":
     X, y = database_generate()
-    knn_obj = knn(X, y) # two dim input space with two neighborhoods
-    knn_obj.predict_and_plot(X, y)
+    k_means_obj = k_means(X, y) # two dim input space with two neighborhoods
+    k_means_obj.predict_and_plot(X, y)

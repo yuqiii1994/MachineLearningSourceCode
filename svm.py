@@ -1,3 +1,5 @@
+# support vector machine
+
 import numpy as np 
 import matplotlib.pyplot as plt
 import cvxopt
@@ -182,7 +184,7 @@ def database_generate(data_volume=100, sigma=2):
 if __name__ == '__main__':
     X, y = database_generate()
 
-    svm_obj = SVM(X, y)
+    svm_obj = SVM(X, y, C=0.2)
     result, accu = svm_obj.predict_and_plot(X, y=y)
 
     print("Accuracy: " + str(accu))

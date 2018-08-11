@@ -1,3 +1,5 @@
+# principle component analysis
+
 import numpy as np
 from numpy.linalg import svd
 
@@ -6,7 +8,7 @@ def myPCA(X, retain_rate=0.9):
     n, m = X.shape
     co_ma = 1/n * np.matmul(X.T, X)
 
-    U, s, V = svd(co_ma)
+    U, s, _ = svd(co_ma)
 
     total_s = np.sum(s) # s already in descending order
     retain_info = np.array([np.sum(s[:i+1])/total_s for i in range(m)])
