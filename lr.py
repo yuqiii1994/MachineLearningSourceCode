@@ -17,14 +17,13 @@ class lr(object):
         b = np.matmul(X.T, y).reshape(n_features+1, 1)
 
         self.w = np.matmul(np.linalg.inv(Phi), b)
-        self.b = 0.5
 
     def predict(self, X, y=None):
         n_samples, n_features = X.shape
         X = np.hstack((np.ones(n_samples).reshape(n_samples, 1), X))
 
         if y is None:
-            return np.matmul(self.w, X) + self.b
+            return np.matmul(self.w, X)
         self.w = np.atleast_2d(self.w)
         y_predict =  np.sum(self.w * X.T, axis=0)
         absError = np.abs(y - y_predict)/n_samples

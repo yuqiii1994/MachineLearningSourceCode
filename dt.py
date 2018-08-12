@@ -1,18 +1,19 @@
 # Decision Tree CART (via Gini Impurity)
 
 import numpy as np 
+from sklearn.metrics import accuracy_score
 
 class dt(object):
 
-    def __init__(self, X, y, max_depth=5):
+    def __init__(self, X, y, max_depth=10, min_size=2):
         self.max_depth = max_depth 
+        self.min_size = min_size
 
-        rootNode = self.constructNode()
-        rootNode['content'] = self.splitNode(X, y)
-        # Tree built: condition to splid, feature index, tree depth
-        self.Tree = [rootNode['content']['cond_record'], rootNode['content']['feat_record'], 0]
+        self.rootNode = self.constructNode()
+        self.rootNode['content'] = self.splitNode(X, y)
 
-        self.growTree(X, y, rootNode, depth=0)
+        self.growTree(X, y, self.rootNode, depth=0)
+
 
     def calculateGiniImpurity(self, x, y):
         # x should be one dimensional matrix with shape of (n_samples, 1)
@@ -74,32 +75,67 @@ class dt(object):
 
     def growTree(self, X, y, node, depth):
         depth += 1
-        if len(y) < 1:
+
+        if len(y) < 1: 
+            return 
+        elif len(y) < self.min_size:
+            node['y_predict'] = self.getLabel(X, y)
             return 
         if depth >= self.max_depth:
-            return self.getLabel(X, y)
+            node['y_predict'] = self.getLabel(X, y)
+            return 
 
-        leftBranch_idx = node['content']['leftBranchRowidx_record'].astype('int64')
-        rightBranch_idx = node['content']['rightBranchRowidx_record'].astype('int64')
+        if node is not None:
 
-        node['left'] = self.constructNode()
-        node['left']['content'] = self.splitNode(X[leftBranch_idx], y[leftBranch_idx])
-        self.growTree(X[leftBranch_idx], y[leftBranch_idx], node['left'], depth)
+            leftBranch_idx = node['content']['leftBranchRowidx_record'].astype('int64')
+            rightBranch_idx = node['content']['rightBranchRowidx_record'].astype('int64')
+            node['left'] = self.constructNode()
+            node['left']['content'] = self.splitNode(X[leftBranch_idx], y[leftBranch_idx])
+            self.growTree(X[leftBranch_idx], y[leftBranch_idx], node['left'], depth)
 
-        node['right'] = self.constructNode()
-        node['right']['content'] = self.splitNode(X[rightBranch_idx], y[rightBranch_idx])
-        self.growTree(X[rightBranch_idx], y[rightBranch_idx], node['right'], depth)
+            node['right'] = self.constructNode()
+            node['right']['content'] = self.splitNode(X[rightBranch_idx], y[rightBranch_idx])
+            self.growTree(X[rightBranch_idx], y[rightBranch_idx], node['right'], depth)
+
 
     def constructNode(self):
         node = {}
         node['left'] = None
         node['right'] = None
         node['content'] = None
+        node['y_predict'] = None
         return node
 
-    def predict(self, X):
-        pass
-                
+    def predict(self, X, y=None, to_printTree=False):
+        y_predict = np.zeros(len(X))
+        testNode = self.rootNode
+
+        for i, each_sample in enumerate(X):
+            y_predict[i] = self._predictRecursive(each_sample, testNode, 0)
+
+        if to_printTree:
+            self._printTree()
+
+        if y is None:
+            return y_predict
+
+        accu = accuracy_score(y_predict, y)
+        return y_predict, accu
+        
+    def _predictRecursive(self, x, node, depth):
+        depth += 1
+        if node['y_predict'] is not None:
+            return node['y_predict']
+        if x[node['content']['feat_record']] > node['content']['cond_record']:
+            answerVal = self._predictRecursive(x, node['left'], depth)
+        else:
+            answerVal = self._predictRecursive(x, node['right'], depth)
+
+        return answerVal
+
+    def _printTree(self):
+        print(self.rootNode)
+
 
 def database_generate(data_volume=100, sigma=2):
     data_volume_each_class = int(data_volume/2)
@@ -127,4 +163,6 @@ def database_generate(data_volume=100, sigma=2):
 if __name__=="__main__":
     X, y = database_generate()
     dt_obj = dt(X, y)
-    dt_obj.predict(X)
+    y_predict, accu = dt_obj.predict(X, y)
+    print('predicted value:\n' + str(y_predict))
+    print('accuracy:\n' + str(accu))
