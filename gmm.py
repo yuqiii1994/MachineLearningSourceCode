@@ -1,5 +1,8 @@
 # Gaussian Mixture Models
 # unsupervised learning
+"""
+There are some bugs that will be fixed in the future releases
+"""
 
 import math
 import numpy as np 
