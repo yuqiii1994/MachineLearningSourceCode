@@ -29,9 +29,11 @@ class nb(object):
         self.classes = classes
         self.n_classes = len(classes)
         self.n_features = n_features
+        self.ClassProb = {} # P( C_k )
 
         for each_class in classes:
             sample_idx = y==each_class
+            self.ClassProb[each_class] = len(X[sample_idx])/n_samples
             self.nb_struct[each_class] = []
             for each_feat_idx in range(n_features):
                 mean_temp = np.mean(X[sample_idx, each_feat_idx])
@@ -47,6 +49,7 @@ class nb(object):
         prob = np.ones([self.n_classes])
         classes = self.classes.astype('int64')
         for each_class in classes:
+            prob[each_class] *= self.ClassProb[each_class]
             for each_feat_idx in range(self.n_features):
                 meanVal = self.nb_struct[each_class][each_feat_idx]['mean']
                 stdVal = self.nb_struct[each_class][each_feat_idx]['std']

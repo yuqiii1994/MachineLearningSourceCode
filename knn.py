@@ -1,10 +1,14 @@
-#k-means
+# knn
+"""
+This is a wrong implementation that k value should be k nearest neighbors for each sample instead of the number of neighborhoods,
+however, the following code illustrates the basic idea behind knn.
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
-class k_means(object):
+class knn(object):
 
     def __init__(self, X, y, n_neighborhoods=2, max_iter=50):
         self.n_neighborhoods = n_neighborhoods
@@ -69,7 +73,7 @@ class k_means(object):
             ", " + str(centriod[each_centroid, 1])[:5] + ")")
 
         y_predict, accuracy = self.predict(X, y)
-        plt.title("A K-means Experiment\n", weight='bold')
+        plt.title("A KNN Experiment\n", weight='bold')
 
         plt.show()
 
@@ -101,5 +105,5 @@ def database_generate(data_volume=100, sigma=2):
 
 if __name__=="__main__":
     X, y = database_generate()
-    k_means_obj = k_means(X, y) # two dim input space with two neighborhoods
-    k_means_obj.predict_and_plot(X, y)
+    knn_obj = knn(X, y) # two dim input space with two neighborhoods
+    knn_obj.predict_and_plot(X, y)

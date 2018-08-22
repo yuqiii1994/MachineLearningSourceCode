@@ -18,7 +18,7 @@ def tanh_derivative(output):
 
 class NN(object):
 
-    def __init__(self, X=None, y=None, num_neurons=100, num_iter=2000, alpha=0.05, print_training=False):
+    def __init__(self, X=None, y=None, num_neurons=100, num_iter=20, alpha=0.05, print_training=False):
 
         num_samples = X.shape[0]
         num_X_dim = X.shape[1]
