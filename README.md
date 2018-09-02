@@ -12,10 +12,10 @@ This repository includes source code (built only on numpy) of some commonly used
 * knn
 * support vector machine
 * gaussian mixture models
+* convolution neural netowrk
 
 ### Work to be done:
 
 * hmm
 * rnn
-* cnn
 * lstm
